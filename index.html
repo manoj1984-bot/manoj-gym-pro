@@ -6,41 +6,74 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body { margin:0; font-family:Arial; background:#000; color:white; }
-h1 { text-align:center; padding:15px; font-size:26px; }
-.container { padding:20px; }
-
-button {
- width:100%; padding:18px; margin:10px 0;
- font-size:18px; font-weight:bold;
- border-radius:40px; border:none;
- background:#1c1c1c; color:white;
-}
-button:active { background:#e10600; }
-
-input {
- width:90%; padding:12px; margin:8px 0;
- font-size:18px; border-radius:10px; border:none;
+body{
+ margin:0;
+ font-family:Arial, sans-serif;
+ background:#000;
+ color:white;
 }
 
-.workout { display:none; }
-.back-btn { background:#333; }
-.exercise { margin-bottom:25px; }
+h1{
+ text-align:center;
+ padding:15px;
+ font-size:28px;
+ font-weight:bold;
+}
 
-.last-info {
+.container{
+ padding:20px;
+}
+
+button{
+ width:100%;
+ padding:18px;
+ margin:10px 0;
+ font-size:18px;
+ font-weight:bold;
+ border-radius:40px;
+ border:none;
+ background:#1c1c1c;
+ color:white;
+}
+
+button:active{
+ background:#e10600;
+}
+
+input{
+ width:90%;
+ padding:14px;
+ margin:8px 0;
+ font-size:18px;
+ border-radius:10px;
+ border:none;
+}
+
+.workout{
+ display:none;
+}
+
+.back-btn{
+ background:#333;
+}
+
+.exercise{
+ margin-bottom:30px;
+}
+
+.last-info{
  font-size:14px;
  color:#aaa;
  margin-bottom:5px;
 }
 
-.video-container {
+.video-container{
  display:none;
  margin-top:10px;
 }
 
-iframe {
+img{
  width:100%;
- height:220px;
  border-radius:12px;
 }
 </style>
@@ -72,42 +105,41 @@ iframe {
 
 const workouts = {
 push:[
-{ name:"Bench Press", video:"gRVjAtPip0Y" },
-{ name:"Incline Dumbbell Press", video:"8iPEnn-ltC8" },
-{ name:"Shoulder Press", video:"B-aVuyhvLHU" },
-{ name:"Lateral Raises", video:"3VcKaXpzqRo" },
-{ name:"Tricep Pushdown", video:"2-LAMcpzODU" },
-{ name:"Overhead Tricep Extension", video:"_gsUck-7M74" }
+{ name:"Bench Press", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif" },
+{ name:"Incline Dumbbell Press", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif" },
+{ name:"Shoulder Press", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif" },
+{ name:"Lateral Raises", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lateral-Raise.gif" },
+{ name:"Tricep Pushdown", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Triceps-Pushdown.gif" },
+{ name:"Overhead Tricep Extension", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Overhead-Triceps-Extension.gif" }
 ],
 pull:[
-{ name:"Pull Ups", video:"eGo4IYlbE5g" },
-{ name:"Barbell Row", video:"FWJR5Ve8bnQ" },
-{ name:"Lat Pulldown", video:"CAwf7n6Luuc" },
-{ name:"Seated Cable Row", video:"GZbfZ033f74" },
-{ name:"Barbell Curl", video:"kwG2ipFRgfo" },
-{ name:"Hammer Curl", video:"zC3nLlEvin4" }
+{ name:"Pull Ups", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Pull-up.gif" },
+{ name:"Barbell Row", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bent-Over-Row.gif" },
+{ name:"Lat Pulldown", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif" },
+{ name:"Seated Cable Row", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Cable-Row.gif" },
+{ name:"Barbell Curl", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Curl.gif" },
+{ name:"Hammer Curl", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Hammer-Curl.gif" }
 ],
 legs:[
-{ name:"Barbell Squats", video:"Dy28eq2PjcM" },
-{ name:"Leg Press", video:"IZxyjW7MPJQ" },
-{ name:"Romanian Deadlift", video:"2SHsk9AzdjA" },
-{ name:"Hamstring Curl", video:"1Tq3QdYUuHs" },
-{ name:"Walking Lunges", video:"wrwwXE_x-pQ" },
-{ name:"Calf Raises", video:"-M4-G8p8fmc" }
+{ name:"Barbell Squats", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Squat.gif" },
+{ name:"Leg Press", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Press.gif" },
+{ name:"Romanian Deadlift", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Romanian-Deadlift.gif" },
+{ name:"Hamstring Curl", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Lying-Leg-Curl.gif" },
+{ name:"Walking Lunges", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Walking-Lunge.gif" },
+{ name:"Calf Raises", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Standing-Calf-Raise.gif" }
 ],
 legs_hiit:[
-{ name:"Barbell Squats", video:"Dy28eq2PjcM" },
-{ name:"Leg Press", video:"IZxyjW7MPJQ" },
-{ name:"Romanian Deadlift", video:"2SHsk9AzdjA" },
-{ name:"Hamstring Curl", video:"1Tq3QdYUuHs" },
-{ name:"Walking Lunges", video:"wrwwXE_x-pQ" },
-{ name:"HIIT Sprint", video:"ml6cT4AZdqI" }
+{ name:"Barbell Squats", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Squat.gif" },
+{ name:"Leg Press", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Press.gif" },
+{ name:"Romanian Deadlift", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Romanian-Deadlift.gif" },
+{ name:"Hamstring Curl", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Lying-Leg-Curl.gif" },
+{ name:"Walking Lunges", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Walking-Lunge.gif" },
+{ name:"High Knees (HIIT)", gif:"https://fitnessprogramer.com/wp-content/uploads/2021/02/High-Knees.gif" }
 ],
 rest:[]
 };
 
 function openWorkout(type){
-
  document.getElementById("home").style.display="none";
  document.getElementById("chartScreen").style.display="none";
 
@@ -133,8 +165,7 @@ function openWorkout(type){
    ▶ View Demo</button>
 
    <div id="video-${type}-${index}" class="video-container">
-    <iframe src="https://www.youtube.com/embed/${exercise.video}" 
-    allowfullscreen></iframe>
+    <img src="${exercise.gif}">
    </div>
 
    <input type="number" placeholder="Weight (kg)" id="${type}-${index}-weight">
