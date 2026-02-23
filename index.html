@@ -27,30 +27,21 @@ input {
 .back-btn { background:#333; }
 .exercise { margin-bottom:25px; }
 
-.demo-box {
- width:100%;
- height:120px;
- background:#111;
- border-radius:15px;
- margin-top:10px;
- display:none;
- position:relative;
- overflow:hidden;
-}
-
-.bar {
- width:60%;
- height:10px;
- background:#e10600;
- position:absolute;
- left:20%;
- top:50px;
-}
-
 .last-info {
  font-size:14px;
  color:#aaa;
  margin-bottom:5px;
+}
+
+.video-container {
+ display:none;
+ margin-top:10px;
+}
+
+iframe {
+ width:100%;
+ height:220px;
+ border-radius:12px;
 }
 </style>
 </head>
@@ -81,41 +72,39 @@ input {
 
 const workouts = {
 push:[
-"Bench Press",
-"Incline Dumbbell Press",
-"Shoulder Press",
-"Lateral Raises",
-"Tricep Pushdown",
-"Overhead Tricep Extension"
+{ name:"Bench Press", video:"gRVjAtPip0Y" },
+{ name:"Incline Dumbbell Press", video:"8iPEnn-ltC8" },
+{ name:"Shoulder Press", video:"B-aVuyhvLHU" },
+{ name:"Lateral Raises", video:"3VcKaXpzqRo" },
+{ name:"Tricep Pushdown", video:"2-LAMcpzODU" },
+{ name:"Overhead Tricep Extension", video:"_gsUck-7M74" }
 ],
 pull:[
-"Pull Ups",
-"Barbell Row",
-"Lat Pulldown",
-"Seated Cable Row",
-"Barbell Curl",
-"Hammer Curl"
+{ name:"Pull Ups", video:"eGo4IYlbE5g" },
+{ name:"Barbell Row", video:"FWJR5Ve8bnQ" },
+{ name:"Lat Pulldown", video:"CAwf7n6Luuc" },
+{ name:"Seated Cable Row", video:"GZbfZ033f74" },
+{ name:"Barbell Curl", video:"kwG2ipFRgfo" },
+{ name:"Hammer Curl", video:"zC3nLlEvin4" }
 ],
 legs:[
-"Barbell Squats",
-"Leg Press",
-"Romanian Deadlift",
-"Hamstring Curl",
-"Walking Lunges",
-"Calf Raises"
+{ name:"Barbell Squats", video:"Dy28eq2PjcM" },
+{ name:"Leg Press", video:"IZxyjW7MPJQ" },
+{ name:"Romanian Deadlift", video:"2SHsk9AzdjA" },
+{ name:"Hamstring Curl", video:"1Tq3QdYUuHs" },
+{ name:"Walking Lunges", video:"wrwwXE_x-pQ" },
+{ name:"Calf Raises", video:"-M4-G8p8fmc" }
 ],
 legs_hiit:[
-"Barbell Squats",
-"Leg Press",
-"Romanian Deadlift",
-"Hamstring Curl",
-"Walking Lunges",
-"10 Min HIIT Sprint"
+{ name:"Barbell Squats", video:"Dy28eq2PjcM" },
+{ name:"Leg Press", video:"IZxyjW7MPJQ" },
+{ name:"Romanian Deadlift", video:"2SHsk9AzdjA" },
+{ name:"Hamstring Curl", video:"1Tq3QdYUuHs" },
+{ name:"Walking Lunges", video:"wrwwXE_x-pQ" },
+{ name:"HIIT Sprint", video:"ml6cT4AZdqI" }
 ],
 rest:[]
 };
-
-let animationIntervals = {};
 
 function openWorkout(type){
 
@@ -129,22 +118,23 @@ function openWorkout(type){
 
  workouts[type].forEach((exercise,index)=>{
 
-  const previous=savedData[exercise]||{};
+  const previous=savedData[exercise.name]||{};
 
   const div=document.createElement("div");
   div.className="exercise";
 
   div.innerHTML=`
-   <h3>${exercise}</h3>
+   <h3>${exercise.name}</h3>
    <div class="last-info">
     Last: ${previous.weight || 0} kg × ${previous.reps || 0}
    </div>
 
-   <button onclick="toggleDemo('demo-${type}-${index}','bar-${type}-${index}')">
+   <button onclick="toggleVideo('video-${type}-${index}')">
    ▶ View Demo</button>
 
-   <div id="demo-${type}-${index}" class="demo-box">
-     <div id="bar-${type}-${index}" class="bar"></div>
+   <div id="video-${type}-${index}" class="video-container">
+    <iframe src="https://www.youtube.com/embed/${exercise.video}" 
+    allowfullscreen></iframe>
    </div>
 
    <input type="number" placeholder="Weight (kg)" id="${type}-${index}-weight">
@@ -168,26 +158,9 @@ function openWorkout(type){
  screen.style.display="block";
 }
 
-function toggleDemo(boxId, barId){
-
- const box=document.getElementById(boxId);
- const bar=document.getElementById(barId);
-
- if(box.style.display==="block"){
-  box.style.display="none";
-  clearInterval(animationIntervals[barId]);
- } else {
-  box.style.display="block";
-
-  let position=20;
-  let direction=1;
-
-  animationIntervals[barId]=setInterval(()=>{
-   position+=direction*3;
-   if(position>80 || position<20) direction*=-1;
-   bar.style.top=position+"px";
-  },30);
- }
+function toggleVideo(id){
+ const box=document.getElementById(id);
+ box.style.display = box.style.display==="block" ? "none" : "block";
 }
 
 function saveWorkout(type){
@@ -199,7 +172,7 @@ function saveWorkout(type){
   let weight=parseFloat(document.getElementById(`${type}-${index}-weight`).value)||0;
   let reps=parseFloat(document.getElementById(`${type}-${index}-reps`).value)||0;
 
-  data[exercise]={weight,reps};
+  data[exercise.name]={weight,reps};
   totalVolume+=weight*reps;
  });
 
