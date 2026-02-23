@@ -3,7 +3,6 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manoj Gym Pro</title>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -44,15 +43,8 @@ input {
  height:10px;
  background:#e10600;
  position:absolute;
- top:50%;
  left:20%;
- transform:translateY(-50%);
- animation:moveBar 1.5s infinite alternate ease-in-out;
-}
-
-@keyframes moveBar {
- 0% { transform:translateY(-40px); }
- 100% { transform:translateY(40px); }
+ top:50px;
 }
 
 .last-info {
@@ -88,12 +80,42 @@ input {
 <script>
 
 const workouts = {
-push:["Bench Press","Shoulder Press","Chest Fly","Tricep Pushdown"],
-pull:["Pull Ups","Barbell Row","Lat Pulldown","Bicep Curl"],
-legs:["Squats","Leg Press","Hamstring Curl","Calf Raises"],
-legs_hiit:["Squats","Lunges","Leg Press","HIIT Sprint"],
+push:[
+"Bench Press",
+"Incline Dumbbell Press",
+"Shoulder Press",
+"Lateral Raises",
+"Tricep Pushdown",
+"Overhead Tricep Extension"
+],
+pull:[
+"Pull Ups",
+"Barbell Row",
+"Lat Pulldown",
+"Seated Cable Row",
+"Barbell Curl",
+"Hammer Curl"
+],
+legs:[
+"Barbell Squats",
+"Leg Press",
+"Romanian Deadlift",
+"Hamstring Curl",
+"Walking Lunges",
+"Calf Raises"
+],
+legs_hiit:[
+"Barbell Squats",
+"Leg Press",
+"Romanian Deadlift",
+"Hamstring Curl",
+"Walking Lunges",
+"10 Min HIIT Sprint"
+],
 rest:[]
 };
+
+let animationIntervals = {};
 
 function openWorkout(type){
 
@@ -118,10 +140,11 @@ function openWorkout(type){
     Last: ${previous.weight || 0} kg × ${previous.reps || 0}
    </div>
 
-   <button onclick="toggleDemo('demo-${type}-${index}')">▶ View Demo</button>
+   <button onclick="toggleDemo('demo-${type}-${index}','bar-${type}-${index}')">
+   ▶ View Demo</button>
 
    <div id="demo-${type}-${index}" class="demo-box">
-     <div class="bar"></div>
+     <div id="bar-${type}-${index}" class="bar"></div>
    </div>
 
    <input type="number" placeholder="Weight (kg)" id="${type}-${index}-weight">
@@ -145,12 +168,25 @@ function openWorkout(type){
  screen.style.display="block";
 }
 
-function toggleDemo(id){
- const box=document.getElementById(id);
+function toggleDemo(boxId, barId){
+
+ const box=document.getElementById(boxId);
+ const bar=document.getElementById(barId);
+
  if(box.style.display==="block"){
   box.style.display="none";
+  clearInterval(animationIntervals[barId]);
  } else {
   box.style.display="block";
+
+  let position=20;
+  let direction=1;
+
+  animationIntervals[barId]=setInterval(()=>{
+   position+=direction*3;
+   if(position>80 || position<20) direction*=-1;
+   bar.style.top=position+"px";
+  },30);
  }
 }
 
